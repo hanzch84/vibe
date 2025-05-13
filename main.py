@@ -4,7 +4,7 @@ import streamlit.components.v1 as components
 # 페이지 설정
 st.set_page_config(page_title="MBTI 진로 추천기", layout="centered")
 
-# 🔡 애니메이션 타이틀
+# 💡 타이틀 애니메이션
 components.html("""
 <div style="text-align: center; margin-top: 30px;">
   <h1 id="title" style="font-family: 'Arial', sans-serif; font-size: 44px; color: #6c63ff;"></h1>
@@ -25,79 +25,131 @@ typeEffect();
 
 st.markdown("---")
 
-# 🎯 직업 설명 데이터
-job_details = {
-    "데이터 사이언티스트": "데이터를 기반으로 인사이트를 도출하고 예측 모델을 설계하는 전문가입니다.",
-    "연구개발자": "신기술과 신제품을 연구하고 개발하는 역할로, 창의성과 분석력이 요구됩니다.",
-    "시스템 설계자": "IT 시스템의 전체 구조를 설계하고 아키텍처를 설계하는 역할입니다.",
-    "AI 연구원": "인공지능 모델을 연구하고 다양한 문제를 해결하는 혁신적인 직군입니다.",
-    "개발자": "코드를 통해 기능을 구현하고 제품을 만드는 핵심 기술 인력입니다.",
-    "이론 물리학자": "자연 현상을 수학적으로 설명하는 물리학을 연구하는 과학자입니다.",
-    "CEO": "기업의 최고 경영자로, 전반적인 전략과 조직 운영을 책임집니다.",
-    "전략 컨설턴트": "기업 문제를 분석하고 해결 전략을 제시하는 전문가입니다.",
-    "정책 분석가": "사회, 경제, 복지 등 공공 정책을 분석하고 평가하는 일을 합니다.",
-    "작가": "자신의 생각과 이야기를 글로 표현하여 세상과 소통합니다.",
-    "교사": "학생에게 지식과 가치를 전달하고 성장을 돕는 교육자입니다.",
-    "사회복지사": "도움이 필요한 사람들의 삶을 지원하고 개선하는 전문가입니다.",
-    "간호사": "환자의 건강을 돌보고 의료진과 함께 치료를 지원하는 의료 전문가입니다.",
-    "디자이너": "시각, 제품, 공간 등의 창의적인 디자인 작업을 수행합니다.",
-    "연기자": "다양한 캐릭터를 표현하며 감정을 전달하는 공연 예술인입니다.",
-    # 필요시 더 추가 가능
+# 📘 스타일: 다크/라이트 모드 자동 대응
+st.markdown("""
+<style>
+.recommend-box, .detail-card {
+    padding: 25px;
+    border-radius: 15px;
+    margin-top: 10px;
+    animation: fadeInZoom 0.6s ease-in-out;
+    border-left: 6px solid var(--accent-color);
 }
-
-# 📘 MBTI 유형 및 진로 추천 데이터
-mbti_careers = {
-    "INTJ": ("전략기획가", ["데이터 사이언티스트", "연구개발자", "시스템 설계자"]),
-    "INTP": ("혁신적 사색가", ["AI 연구원", "개발자", "이론 물리학자"]),
-    "ENTJ": ("대담한 리더", ["CEO", "전략 컨설턴트", "정책 분석가"]),
-    "INFP": ("열정적 중재자", ["작가", "교사", "사회복지사"]),
-    "ISFJ": ("헌신적인 보호자", ["간호사", "교사", "행정직"]),
-    "ISFP": ("감성적인 장인", ["디자이너", "사진작가", "미술가"]),
-    "ESFP": ("에너지 넘치는 연예인", ["연기자", "이벤트 기획자", "여행 가이드"]),
-    # 필요시 더 추가 가능
+@keyframes fadeInZoom {
+  0% {opacity: 0; transform: scale(0.95);}
+  100% {opacity: 1; transform: scale(1);}
 }
-
-# ✅ MBTI 선택
-selected = st.selectbox("당신의 MBTI를 선택하세요", [""] + sorted(mbti_careers.keys()))
-
-# 추천 결과 영역
-if selected:
-    st.balloons()  # 🎈 화려한 효과
-    title, careers = mbti_careers[selected]
-
-    st.markdown("""
-    <style>
-    @keyframes fadeInZoom {
-      0% {opacity: 0; transform: scale(0.8);}
-      100% {opacity: 1; transform: scale(1);}
-    }
-    .recommend-box {
+button[kind="primary"] {
+    padding: 8px 14px;
+    border: none;
+    border-radius: 6px;
+    font-size: 16px;
+    transition: 0.3s;
+    margin-bottom: 5px;
+    cursor: pointer;
+}
+button[kind="primary"]:hover {
+    filter: brightness(1.1);
+}
+@media (prefers-color-scheme: dark) {
+  .recommend-box {
+      background-color: #1e1f22;
+      color: #eaeaea;
+      border-left-color: #6c63ff;
+      box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
+  }
+  .detail-card {
+      background-color: #2a2a2d;
+      color: #f5f5f5;
+      border-left-color: #ffaa33;
+  }
+  button[kind="primary"] {
+      background-color: #3a3a3d;
+      color: white;
+  }
+}
+@media (prefers-color-scheme: light) {
+  .recommend-box {
       background-color: #f0f8ff;
-      padding: 25px;
-      border-radius: 15px;
-      border-left: 6px solid #6c63ff;
-      animation: fadeInZoom 0.8s ease-in-out;
+      color: #202020;
+      border-left-color: #6c63ff;
+      box-shadow: 0 0 10px rgba(108, 99, 255, 0.2);
+  }
+  .detail-card {
+      background-color: #fffbe6;
+      color: #303030;
+      border-left-color: #ffaa33;
+  }
+  button[kind="primary"] {
+      background-color: #eeeeee;
+      color: black;
+  }
+}
+</style>
+""", unsafe_allow_html=True)
+
+# 📘 전문 직업 정보
+job_details = {
+    "연기자": {
+        "요약": "다양한 캐릭터를 표현하며 감정을 전달하는 공연 예술인입니다.",
+        "학위/전공": "연극영화학, 뮤지컬학, 방송연예학 등 (전문대졸 이상 권장)",
+        "요구 능력": "표현력, 감정 조절, 무대/카메라 감각, 창의성, 협업 능력",
+        "준비 방법": "청소년기부터 연극반/뮤지컬 활동 참여, 말하기 훈련, 감정 표현 연습",
+        "추천 활동": "문화센터 연기과정 수강, 예술대학 준비, 오디션 참여, 포트폴리오 제작",
+        "참고 링크": "https://www.career.go.kr/cnet/front/base/job/jobView.do?SEQ=289"
+    },
+    "이벤트 기획자": {
+        "요약": "공연, 축제, 박람회 등의 행사를 기획하고 실행하는 직업입니다.",
+        "학위/전공": "관광학, 홍보·광고학, 커뮤니케이션 등",
+        "요구 능력": "기획력, 커뮤니케이션, 일정 관리, 예산 운영, 창의성",
+        "준비 방법": "행사 도우미 활동, 지역 축제 스태프, 기획서 작성 경험 쌓기",
+        "추천 활동": "동아리 행사 기획, 공모전 참여, 현장 실습 인턴",
+        "참고 링크": "https://www.career.go.kr/cnet/front/base/job/jobView.do?SEQ=415"
+    },
+    "여행 가이드": {
+        "요약": "국내외 여행지에서 관광객을 안내하며 정보를 전달하는 직업입니다.",
+        "학위/전공": "관광학, 국제학, 외국어 관련 전공",
+        "요구 능력": "언어 능력, 친화력, 여행 지식, 설명 능력, 체력",
+        "준비 방법": "외국어 학습, 국내 여행 다니며 지식 습득, 관광통역안내사 자격증 준비",
+        "추천 활동": "가이드 체험 프로그램 참여, 현장 실습, 여행 블로그 운영",
+        "참고 링크": "https://www.career.go.kr/cnet/front/base/job/jobView.do?SEQ=487"
     }
-    .recommend-title {
-      color: #4b0082;
-      font-size: 24px;
-      margin-bottom: 10px;
-    }
-    </style>
+}
+
+# MBTI 추천 직업 매핑
+mbti_careers = {
+    "ESFP": ("에너지 넘치는 연예인", ["연기자", "이벤트 기획자", "여행 가이드"]),
+    # 필요한 다른 MBTI 유형도 이 구조로 추가 가능
+}
+
+# ✅ 사용자 선택
+selected = st.selectbox("당신의 MBTI를 선택하세요", [""] + list(mbti_careers.keys()))
+
+if selected:
+    st.balloons()
+    title, jobs = mbti_careers[selected]
+
+    st.markdown(f"""
+    <div class="recommend-box">
+        <div class="recommend-title">🎯 {selected} - {title}</div>
+        <div>추천 진로:</div>
+    </div>
     """, unsafe_allow_html=True)
 
-    st.markdown(f"""<div class="recommend-box">
-    <div class="recommend-title">🧬 {selected} - {title}</div>
-    <div>추천 진로:</div>
-    </div>""", unsafe_allow_html=True)
-
-    # ✨ 직업 버튼 클릭 시 상세 설명
-    for job in careers:
+    for job in jobs:
         if st.button(f"👉 {job} 클릭해서 설명 보기", key=job):
-            st.markdown(f"""
-            <div style="background-color: #fff8dc; padding: 15px; margin-top: 10px; border-radius: 10px;
-                        border-left: 5px solid orange; animation: fadeInZoom 0.6s ease-in-out;">
-              <strong>{job}</strong><br>
-              <p style="margin-top:5px; font-size: 16px;">{job_details.get(job, "상세 설명이 준비되지 않았습니다.")}</p>
-            </div>
-            """, unsafe_allow_html=True)
+            info = job_details.get(job)
+            if info:
+                st.markdown(f"""
+                <div class="detail-card">
+                    <h4 style='margin-bottom:10px;'>{job}</h4>
+                    <p><strong>✅ 요약:</strong> {info["요약"]}</p>
+                    <p><strong>🎓 관련 학위/전공:</strong> {info["학위/전공"]}</p>
+                    <p><strong>🛠 요구 능력:</strong> {info["요구 능력"]}</p>
+                    <p><strong>📚 준비 방법:</strong> {info["준비 방법"]}</p>
+                    <p><strong>🧑‍🏫 추천 활동:</strong> {info["추천 활동"]}</p>
+                    <p><strong>🌐 참고 링크:</strong> <a href="{info["참고 링크"]}" target="_blank">직업정보 더 보기</a></p>
+                </div>
+                """, unsafe_allow_html=True)
+            else:
+                st.warning("상세 정보가 아직 준비되지 않았습니다.")
