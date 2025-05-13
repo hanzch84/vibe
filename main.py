@@ -24,3 +24,5 @@ typeEffect();
 
 # HTML 삽입
 components.html(html_code, height=150)
+
+
